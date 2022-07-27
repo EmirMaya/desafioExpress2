@@ -18,7 +18,6 @@ const arrayProducts = [
         price: 3000,
         thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjjp82l1QS66q0CFS8rZNoqSZLtsPeqHFovskslOI9n3eXEZwv8mE63nQ2locua-bXj7M&usqp=CAU'
     }
-
 ]
 
 router.get('/', (req, res) => {
@@ -32,17 +31,17 @@ router.get('/:id', (req, res) => {
     res.send({ product: arrayProducts[id - 1] })
 })
 
-router.post('/', (req, res) => {
+router.post('/newProd', (req, res) => {
     let prod = req.body;
+    console.log(req.body);
     if (!prod.name) return res.status(400).send({ status: "error", error: "invalid input" })
     arrayProducts.push(prod);
     res.send({ status: "success", message: "prod added" })
-
 })
 
 router.put('/p/:id', (req, res) => {
     console.log('PUT request recibido');
-    let obj = req.body.product
+    console.log(req.body);
     let newObj = {
         title: "zapatillas nike 2",
         price: 8000,
@@ -50,16 +49,19 @@ router.put('/p/:id', (req, res) => {
     }
     if (isNaN(req.params.id)) return res.status(400).send("El parámetro debe ser númerico")
     if (parseInt(req.params.id) < 1 || parseInt(req.params.id) > arrayProducts.length) return res.status(404).send({ error: 'producto no encontrado' })
-    let oldObj = newObj[req.params.id-1]
-    newObj[req.params.id-1]=obj;
-    res.send({previous:oldObj, new: newObj})
+    req.body.splice(arrayProducts.length, 0, newObj)
+    res.send(req.body)
+    console.log(req.body);
+
 
 
 })
 
 router.delete('/:id', (req, res) => {
-    // logica para eliminar usuario
-    req.query;
+    if (isNaN(req.params.id)) return res.status(400).send("El parámetro debe ser númerico")
+    if (parseInt(req.params.id) < 1 || parseInt(req.params.id) > arrayProducts.length) return res.status(404).send({ error: 'producto no encontrado' })
+    req.body.splice((req.params.id - 1), 1)
+    res.send(req.body)
 })
 
 export default router;
